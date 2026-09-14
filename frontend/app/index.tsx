@@ -78,6 +78,21 @@ export default function Home() {
   const brandKey = (g: CompatGroup) =>
     `${g.categoryId}|${g.subCategory ?? "main"}|${g.brandGroup}`;
 
+  // Highlight the matched portion of a text in the accent color
+  const highlightText = (text: string, style: object) => {
+    if (!q) return <Text style={style}>{text}</Text>;
+    const lower = text.toLowerCase();
+    const idx = lower.indexOf(q);
+    if (idx === -1) return <Text style={style}>{text}</Text>;
+    return (
+      <Text style={style}>
+        {text.slice(0, idx)}
+        <Text style={styles.match}>{text.slice(idx, idx + q.length)}</Text>
+        {text.slice(idx + q.length)}
+      </Text>
+    );
+  };
+
   const verifiedCount = groups.filter((g) => g.status === "verified").length;
 
   // -------- search --------
@@ -435,13 +450,16 @@ export default function Home() {
                     testID={`result-${g.id}`}
                   >
                     <View style={styles.resultTop}>
-                      <Text style={styles.resultMeta} numberOfLines={1}>
-                        {catLabel(catById[g.categoryId])}
-                        {g.subCategory
-                          ? ` · ${subLabel(g.categoryId, g.subCategory)}`
-                          : ""}{" "}
-                        · {g.brandGroup}
-                      </Text>
+                      <View style={{ flex: 1 }}>
+                        {highlightText(
+                          `${catLabel(catById[g.categoryId])}${
+                            g.subCategory
+                              ? ` · ${subLabel(g.categoryId, g.subCategory)}`
+                              : ""
+                          } · ${g.brandGroup}`,
+                          styles.resultMeta,
+                        )}
+                      </View>
                       {g.status === "verified" && (
                         <SealCheck
                           size={16}
@@ -450,9 +468,10 @@ export default function Home() {
                         />
                       )}
                     </View>
-                    <Text style={styles.resultModels} numberOfLines={2}>
-                      {g.models.join("  =  ")}
-                    </Text>
+                    {highlightText(
+                      g.models.join("  =  "),
+                      styles.resultModels,
+                    )}
                   </Pressable>
                 ))
               )}
@@ -672,6 +691,10 @@ const useStyles = makeStyles((colors) => ({
     fontFamily: fonts.bodyMedium,
     fontSize: 14,
     lineHeight: 21,
+  },
+  match: {
+    color: colors.brand,
+    fontFamily: fonts.bodyBold,
   },
   pressed: { opacity: 0.7 },
 }));

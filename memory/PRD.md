@@ -44,6 +44,12 @@ share the same spare part, and confirm/flag community data.
 - Voltage Divider Calculator. Export to Excel (CSV share on native / download web).
 - EN/HI localization for all UI labels; phone model names stay English.
 - Verified via testing agent: 11/11 backend, all frontend flows passed.
+- (2026-06) Category list expanded to 15: added Main Flex/Charging Flex,
+  Speaker/Ringer, Camera Glass, Back Panel, Panel Button, SIM Tray.
+- (2026-06) Search results highlight matched text in amber (Fast Smart Search).
+- (2026-06) Voltage Divider Calculator now has Basic + Advanced modes; Advanced
+  supports 2-6 series resistors with per-resistor voltage drops, total
+  resistance and circuit current.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

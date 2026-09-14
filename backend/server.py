@@ -46,6 +46,12 @@ CATEGORIES = [
     {"id": "battery", "order": 7, "name_en": "Battery", "name_hi": "बैटरी", "subCategories": []},
     {"id": "power-volume-flex", "order": 8, "name_en": "Power Volume Flex", "name_hi": "पावर वॉल्यूम फ्लेक्स", "subCategories": []},
     {"id": "charging-sub-board", "order": 9, "name_en": "Charging Sub Board", "name_hi": "चार्जिंग सब बोर्ड", "subCategories": []},
+    {"id": "main-flex", "order": 10, "name_en": "Main Flex / Charging Flex", "name_hi": "मेन फ्लेक्स / चार्जिंग फ्लेक्स", "subCategories": []},
+    {"id": "speaker-ringer", "order": 11, "name_en": "Speaker / Ringer", "name_hi": "स्पीकर / रिंगर", "subCategories": []},
+    {"id": "camera-glass", "order": 12, "name_en": "Camera Glass", "name_hi": "कैमरा ग्लास", "subCategories": []},
+    {"id": "back-panel", "order": 13, "name_en": "Back Panel", "name_hi": "बैक पैनल", "subCategories": []},
+    {"id": "panel-button", "order": 14, "name_en": "Panel Button", "name_hi": "पैनल बटन", "subCategories": []},
+    {"id": "sim-tray", "order": 15, "name_en": "SIM Tray", "name_hi": "सिम ट्रे", "subCategories": []},
 ]
 
 BRAND_GROUPS = [

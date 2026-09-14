@@ -62,6 +62,13 @@ const en: Dict = {
   exported: "Exported — choose where to share",
   nothingToExport: "No data to export yet",
   required: "This field is required",
+  basic: "Basic",
+  advanced: "Advanced",
+  numResistors: "Number of resistors",
+  resistorLabel: "Resistor",
+  dropsLabel: "Voltage drops",
+  totalResistance: "Total resistance",
+  circuitCurrent: "Circuit current",
 };
 
 const hi: Dict = {
@@ -116,6 +123,13 @@ const hi: Dict = {
   exported: "निर्यात हुआ — साझा करने का स्थान चुनें",
   nothingToExport: "अभी निर्यात करने के लिए कोई डेटा नहीं",
   required: "यह फ़ील्ड आवश्यक है",
+  basic: "बेसिक",
+  advanced: "एडवांस्ड",
+  numResistors: "रेजिस्टर की संख्या",
+  resistorLabel: "रेजिस्टर",
+  dropsLabel: "वोल्टेज ड्रॉप",
+  totalResistance: "कुल रेजिस्टेंस",
+  circuitCurrent: "सर्किट करंट",
 };
 
 const DICTS: Record<Lang, Dict> = { en, hi };
