@@ -90,6 +90,20 @@ share the same spare part, and confirm/flag community data.
   on public writes using X-Forwarded-For; CORS credentials off; ADMIN_PASSCODE
   fail-open default removed. Public-by-design: confirm + submissions + GETs.
   A junk pasted-list record (category battery, "Friends mobile Shop") removed.
+- (2026-09) Bulk data import round 6: Battery. 452 groups seeded direct via
+  PyMongo (seed script /tmp/seed_battery.py, raw text /tmp/battery_raw.txt).
+  Brand split: Realme/Oppo/OnePlus 105, Vivo/iQoo 91, Redmi/Poco 77,
+  Samsung 48, Lava/Micromax/Moto 45, Itel/Tecno/Infinix 37, Nokia 22,
+  Lenovo 14, Honor/Huawei 13. 14 verified. Battery part numbers (BLP605,
+  BN4A etc.) with mAh capacity stored as first model token so part-number
+  search works. New brand groups added: Nokia, Lenovo, Honor/Huawei.
+  Totals now: 1334 groups.
+- (2026-09) Bulk data import round 7: Back Cover (168), Power Volume Flex
+  (78), Charging Sub Board (74) seeded via generic parser
+  /tmp/seed_parts.py (raw: /tmp/backcover_raw.txt, /tmp/pvf_raw.txt,
+  /tmp/subboard_raw.txt). Model-only groups (no part numbers), "=" and
+  brand-keyword splitting, mojibake cleaned, iQOO spellings normalised.
+  Totals now: 1654 groups, 188 verified. All 4 pending user lists done.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

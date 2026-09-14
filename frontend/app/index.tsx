@@ -14,6 +14,7 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -53,6 +54,7 @@ export default function Home() {
   const [openSub, setOpenSub] = useState<Record<string, boolean>>({});
   const [expandedBrand, setExpandedBrand] = useState<string | null>(null);
   const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [folderQuery, setFolderQuery] = useState<Record<string, string>>({});
   const pendingScroll = useRef<string | null>(null);
 
   const scrollRef = useRef<ScrollView>(null);
@@ -283,7 +285,14 @@ export default function Home() {
 
   const renderCategory = (cat: Category) => {
     const catGroups = groups.filter((g) => g.categoryId === cat.id);
-    const mainGroups = catGroups.filter((g) => !g.subCategory);
+    const fq = (folderQuery[cat.id] ?? "").trim().toLowerCase();
+    const matchG = (g: CompatGroup) =>
+      !fq ||
+      [g.models.join(" "), g.brandGroup, g.source ?? ""]
+        .join(" ")
+        .toLowerCase()
+        .includes(fq);
+    const mainGroups = catGroups.filter((g) => !g.subCategory && matchG(g));
     const open = expandedCategory === cat.id;
     return (
       <View key={cat.id} style={styles.categoryBlock}>
@@ -307,6 +316,21 @@ export default function Home() {
 
         {open && (
           <View style={styles.categoryBody}>
+            <View style={styles.folderSearch}>
+              <MagnifyingGlass size={15} weight="bold" color={colors.muted} />
+              <TextInput
+                style={styles.folderSearchInput}
+                value={folderQuery[cat.id] ?? ""}
+                onChangeText={(v) =>
+                  setFolderQuery((s) => ({ ...s, [cat.id]: v }))
+                }
+                placeholder={`${t("searchPlaceholder")}`}
+                placeholderTextColor={colors.muted}
+                autoCapitalize="none"
+                autoCorrect={false}
+                testID={`folder-search-${cat.id}`}
+              />
+            </View>
             {catGroups.length === 0 ? (
               <Text style={styles.emptyText}>{t("noData")}</Text>
             ) : (
@@ -364,7 +388,7 @@ export default function Home() {
                 )}
                 {cat.subCategories.map((sub) => {
                   const subGroups = catGroups.filter(
-                    (g) => g.subCategory === sub.key,
+                    (g) => g.subCategory === sub.key && matchG(g),
                   );
                   const subOpenKey = `${cat.id}:${sub.key}`;
                   const subOpen = !!openSub[subOpenKey];
@@ -603,6 +627,24 @@ const useStyles = makeStyles((colors) => ({
     borderTopWidth: 1,
     borderTopColor: colors.divider,
     paddingTop: 10,
+  },
+  folderSearch: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: colors.surfaceTertiary,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: 12,
+    height: 42,
+  },
+  folderSearchInput: {
+    flex: 1,
+    color: colors.onSurface,
+    fontFamily: fonts.bodyRegular,
+    fontSize: 14,
+    paddingVertical: 0,
   },
 
   brandBlock: { gap: 8 },

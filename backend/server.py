@@ -92,6 +92,9 @@ BRAND_GROUPS = [
     "Itel/Tecno/Infinix",
     "Lava/Micromax/Moto",
     "Apple",
+    "Nokia",
+    "Lenovo",
+    "Honor/Huawei",
     "Others",
 ]
 
