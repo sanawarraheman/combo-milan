@@ -83,6 +83,13 @@ share the same spare part, and confirm/flag community data.
 - (2026-06) UI fix: brand group names no longer truncate ("Realme/Oppo/OnePlus"
   shows in full, wraps instead of ellipsis) — per user request.
   Totals now: 815 groups, 144 verified.
+- (2026-06) Security audit fixes (verified by testing agent, 25/25 passed):
+  server-enforced admin passcode (X-Admin-Passcode header) on POST /groups and
+  /models; passcode stored in secure storage after unlock and sent by the app;
+  CSV formula-injection neutralized in export; per-IP rate limiting (60/min)
+  on public writes using X-Forwarded-For; CORS credentials off; ADMIN_PASSCODE
+  fail-open default removed. Public-by-design: confirm + submissions + GETs.
+  A junk pasted-list record (category battery, "Friends mobile Shop") removed.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

@@ -75,8 +75,8 @@ export default function AddData() {
       setSource("");
       setStatus("unconfirmed");
       setIsCurve(false);
-    } catch {
-      showToast(t("saveFailed"), "error");
+    } catch (e: any) {
+      showToast(e?.message || t("saveFailed"), "error");
     }
   };
 
@@ -93,8 +93,8 @@ export default function AddData() {
       showToast(t("saved"), "success");
       setModelName("");
       setModelBrand("");
-    } catch {
-      showToast(t("saveFailed"), "error");
+    } catch (e: any) {
+      showToast(e?.message || t("saveFailed"), "error");
     }
   };
 

@@ -155,7 +155,12 @@ export default function Home() {
       showToast(t("nothingToExport"), "info");
       return;
     }
-    const esc = (v: string) => `"${(v ?? "").replace(/"/g, '""')}"`;
+    // Neutralize spreadsheet formula injection: prefix formula-leading chars
+    const esc = (v: string) => {
+      let s = v ?? "";
+      if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
     const header = [
       "Category",
       "SubCategory",

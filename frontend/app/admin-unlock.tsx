@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { verifyPasscode } from "@/src/api";
+import { saveAdminPasscode, verifyPasscode } from "@/src/api";
 import { fonts } from "@/src/fonts";
 import { useI18n } from "@/src/i18n";
 import { makeStyles, useTheme } from "@/src/theme";
@@ -38,8 +38,9 @@ export default function AdminUnlock() {
     if (code.length !== 4) return;
     setChecking(true);
     verifyPasscode(code)
-      .then((ok) => {
+      .then(async (ok) => {
         if (ok) {
+          await saveAdminPasscode(code);
           router.replace("/add-data");
         } else {
           setError(true);

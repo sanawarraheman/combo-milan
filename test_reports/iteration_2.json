@@ -1,0 +1,46 @@
+{
+  "summary": "Security-fix verification round (SEC-001/002/003) for Combo Milan. Backend: 25/25 pytest passed after ONE real fix I applied. SEC-001 verified: POST /api/groups and /api/models return 403 with no header, wrong passcode, and empty passcode; 200 with X-Admin-Passcode: 4321; self-marking status='verified' without auth is rejected; GETs, /confirm and /submissions remain public and working. SEC-003 INITIALLY FAILED: 70 rapid confirms all returned 200 — RCA: rate limiter keyed on request.client.host, which behind the K8s ingress is the ingress controller pod IP (logs showed TWO source IPs 10.79.142.5 / 10.79.142.2), sharding the per-IP bucket and multiplying the effective limit by proxy count. Fixed by preferring X-Forwarded-For first hop in rate_limit() (server.py); re-test now returns 429 after 60 req/min. SEC-002 verified: esc() prefixes apostrophe for =,+,-,@,TAB,CR leading cells and double-escapes quotes (logic replicated and unit-checked; CSV export still downloads combo-milan.csv from UI). Frontend E2E passed: Add data -> keypad 4321 -> Add Data screen (passcode stored in storage and sent as header) -> created group 'TEST_UISEC Model Alpha/Beta' (Battery/Redmi-Poco) -> 'Saved successfully' toast -> group appears on Home search; cleared passcode -> direct /add-data save shows server message 'Invalid admin passcode' in toast. CORS allow_credentials=False confirmed in code.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/groups/{id}/confirm (rate limiting)", "issue": "FIXED BY TESTING AGENT: rate_limit() used request.client.host which is the ingress controller IP behind K8s (multiple ingress pods -> multiple independent 60/min buckets -> limit effectively 120+/min and keyed on proxy, not client). Now prefers X-Forwarded-For first hop. Note: X-Forwarded-For is spoofable by direct clients if backend is ever exposed without the ingress — acceptable for this preview topology but worth a comment."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "Global props/styles", "issue": "Console deprecation warnings still present: 'props.pointerEvents is deprecated. Use style.pointerEvents' and 'shadow* style props are deprecated. Use boxShadow'. Cosmetic, non-blocking."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_security_fixes.py",
+    "/app/backend/tests/test_combo_milan.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/tmp/esc_check.js"
+  ],
+  "action_items": [
+    "Review my server.py rate_limit() change (X-Forwarded-For based client IP) and keep it; consider only trusting XFF when the peer is a known proxy.",
+    "Cleanup test data (no DELETE endpoint exists — needs DB action): compat_groups with source='TEST_sec' (id cc0705c1-567d-4d6e-967d-f393985f28c0, confirmCount inflated ~120+ by rate-limit tests), models named TEST_SEC_*/TEST_UISEC_* (Battery category, Redmi/Poco + Samsung brand chips), models collection entries TEST_SEC_Model X / TEST_Redmi Note 12, submissions TEST_SEC_Submission / TEST_Redmi Note 11, and duplicate TEST_ groups from re-run regression suite (battery verified + curve-glass).",
+    "(Optional) Migrate deprecated pointerEvents/shadow* props to style.pointerEvents/boxShadow."
+  ],
+  "critical_code_review_comments": [
+    "server.py admin auth is correct: verify_admin runs before rate_limit in dependency order, so unauthenticated 403s don't consume rate-limit budget. Passcode compared with strip(); 403 detail 'Invalid admin passcode' surfaces verbatim in the app toast — good UX.",
+    "ADMIN_PASSCODE falls back to hardcoded '4321' if env missing (server.py:24) — a fail-open default; recommend os.environ['ADMIN_PASSCODE'] without default so misconfiguration fails closed.",
+    "src/api.ts correctly awaits getAdminPasscode() and sends X-Admin-Passcode only on useCreateGroup/useCreateModel; confirm/submissions stay header-less as designed. Web secure storage falls back to AsyncStorage/localStorage (index.web.ts) — passcode is plaintext in localStorage on web, acceptable for a 4-digit gate but noted.",
+    "esc() in index.tsx covers =,+,-,@,TAB,CR leading chars and CSV quote-escaping; matches OWASP CSV injection guidance."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (rate_limit: use X-Forwarded-For client IP — SEC-003 fix)",
+    "/app/backend/tests/test_security_fixes.py (new: 14 security tests)",
+    "/app/backend/tests/test_combo_milan.py (added X-Admin-Passcode header to mutating tests; updated meta counts 15 categories/8 brand groups)",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "success_rate": {"backend": "100% (25/25)", "frontend": "100% of covered flows (admin unlock->create->home, error toast, CSV export)"},
+  "seed_data_creation": "TEST_-prefixed data created (see action_items for cleanup): group source=TEST_sec id cc0705c1-567d-4d6e-967d-f393985f28c0; UI group TEST_UISEC Model Alpha/Beta; model TEST_SEC_Model X; submission TEST_SEC_Submission; plus regression-suite TEST_ duplicates. Real 815 groups untouched.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Security fixes verified. Rate limiter now keys on X-Forwarded-For — rate-limit tests must run LAST in a pytest session (bucket is per real client IP, 60/min, shared across /groups,/models,/confirm,/submissions) and xdist parallelism is fine but ordering matters; use -p no:xdist -o addopts='' and order test_combo_milan.py before test_security_fixes.py. Admin passcode 4321 stored in localStorage key admin_passcode (JSON-quoted) on web. Selectors: key-<digit>, save-group, cat-chip-<id>, brand-chip-<brand with slashes>, toast, action-export (use expect_download). Note pytest.ini enables xdist by default.",
+  "rca_of_issue": "SEC-003 rate limiting appeared broken (70 rapid confirms -> all 200). Reproduction: curl loop of 70 POSTs to /api/groups/{id}/confirm via public URL. RCA: backend access logs showed requests arriving from TWO different ingress controller pod IPs (10.79.142.5, 10.79.142.2); rate_limit() keyed on request.client.host (the proxy), so each ingress node had its own 60/min bucket and the real client was never identified — effective limit >= 120/min and shared across ALL app users per ingress node. Mitigation applied: rate_limit() now prefers the first X-Forwarded-For hop (set by the ingress), falling back to client.host. Post-fix: 429 returned after 60 requests/min from one client IP; normal confirm flow unaffected (25/25 tests pass)."
+}

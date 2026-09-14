@@ -9,6 +9,7 @@ import requests
 BASE_URL = os.environ.get("EXPO_PUBLIC_BACKEND_URL") or "https://combo-milan.preview.emergentagent.com"
 BASE_URL = BASE_URL.rstrip("/")
 API = f"{BASE_URL}/api"
+ADMIN_HEADERS = {"X-Admin-Passcode": "4321"}
 
 
 @pytest.fixture(scope="module")
@@ -25,8 +26,8 @@ class TestMeta:
         assert r.status_code == 200, r.text
         data = r.json()
         assert "categories" in data and "brandGroups" in data
-        assert len(data["categories"]) == 9
-        assert len(data["brandGroups"]) == 6
+        assert len(data["categories"]) == 15
+        assert len(data["brandGroups"]) == 8
         # tempered-glass has curve-glass sub
         tg = next((c for c in data["categories"] if c["id"] == "tempered-glass"), None)
         assert tg is not None
@@ -71,7 +72,7 @@ class TestGroups:
             "source": "TEST_source",
             "status": "verified",
         }
-        r = api_client.post(f"{API}/groups", json=payload, timeout=15)
+        r = api_client.post(f"{API}/groups", json=payload, headers=ADMIN_HEADERS, timeout=15)
         assert r.status_code == 200, r.text
         doc = r.json()
         assert doc["id"]
@@ -98,7 +99,7 @@ class TestGroups:
             "source": None,
             "status": "unconfirmed",
         }
-        r = api_client.post(f"{API}/groups", json=payload, timeout=15)
+        r = api_client.post(f"{API}/groups", json=payload, headers=ADMIN_HEADERS, timeout=15)
         assert r.status_code == 200, r.text
         doc = r.json()
         assert doc["subCategory"] == "curve-glass"
@@ -113,7 +114,7 @@ class TestGroups:
             "models": ["  ", ""],
             "status": "unconfirmed",
         }
-        r = api_client.post(f"{API}/groups", json=payload, timeout=15)
+        r = api_client.post(f"{API}/groups", json=payload, headers=ADMIN_HEADERS, timeout=15)
         assert r.status_code == 400
 
     def test_confirm_increments_and_persists(self, api_client):
@@ -144,7 +145,7 @@ class TestGroups:
 class TestModels:
     def test_create_model(self, api_client):
         payload = {"name": "TEST_Redmi Note 12", "brand": "Redmi"}
-        r = api_client.post(f"{API}/models", json=payload, timeout=15)
+        r = api_client.post(f"{API}/models", json=payload, headers=ADMIN_HEADERS, timeout=15)
         assert r.status_code == 200, r.text
         d = r.json()
         assert d["name"] == "TEST_Redmi Note 12"

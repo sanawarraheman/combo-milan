@@ -1,9 +1,11 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Header, Request, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import time
+from collections import defaultdict
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -19,10 +21,38 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-ADMIN_PASSCODE = os.environ.get('ADMIN_PASSCODE', '4321')
+ADMIN_PASSCODE = os.environ['ADMIN_PASSCODE']
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+
+# ---------------------------------------------------------------------------
+# Security: server-side admin check + simple per-IP rate limiting
+# ---------------------------------------------------------------------------
+def verify_admin(x_admin_passcode: Optional[str] = Header(None)):
+    if not x_admin_passcode or x_admin_passcode.strip() != ADMIN_PASSCODE:
+        raise HTTPException(status_code=403, detail="Invalid admin passcode")
+
+
+_rate_hits: dict = defaultdict(list)
+RATE_LIMIT_PER_MIN = 60
+
+
+def rate_limit(request: Request):
+    # Prefer the real client IP: behind the K8s ingress, request.client.host is
+    # the ingress controller pod IP (several of them), which would shard the
+    # per-IP bucket and multiply the effective limit by the number of proxies.
+    xff = request.headers.get("x-forwarded-for")
+    ip = (xff.split(",")[0].strip() if xff else None) or (
+        request.client.host if request.client else "unknown"
+    )
+    now = time.time()
+    hits = [t for t in _rate_hits[ip] if now - t < 60]
+    if len(hits) >= RATE_LIMIT_PER_MIN:
+        raise HTTPException(status_code=429, detail="Too many requests, slow down")
+    hits.append(now)
+    _rate_hits[ip] = hits
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +149,7 @@ async def get_groups():
     return docs
 
 
-@api_router.post("/groups")
+@api_router.post("/groups", dependencies=[Depends(verify_admin), Depends(rate_limit)])
 async def create_group(payload: GroupCreate):
     models = [m.strip() for m in payload.models if m and m.strip()]
     if not models:
@@ -141,7 +171,7 @@ async def create_group(payload: GroupCreate):
     return doc
 
 
-@api_router.post("/groups/{group_id}/confirm")
+@api_router.post("/groups/{group_id}/confirm", dependencies=[Depends(rate_limit)])
 async def confirm_group(group_id: str):
     result = await db.compat_groups.find_one_and_update(
         {"id": group_id, "deleted_at": None},
@@ -160,7 +190,7 @@ async def get_models():
     return docs
 
 
-@api_router.post("/models")
+@api_router.post("/models", dependencies=[Depends(verify_admin), Depends(rate_limit)])
 async def create_model(payload: BrandModelCreate):
     doc = {
         "id": str(uuid.uuid4()),
@@ -180,7 +210,7 @@ async def get_submissions():
     return docs
 
 
-@api_router.post("/submissions")
+@api_router.post("/submissions", dependencies=[Depends(rate_limit)])
 async def create_submission(payload: SubmissionCreate):
     doc = {
         "id": str(uuid.uuid4()),
@@ -206,7 +236,7 @@ app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],

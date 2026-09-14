@@ -1,6 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { storage } from "@/src/utils/storage";
+
 const API_BASE = `${process.env.EXPO_PUBLIC_BACKEND_URL}/api`;
+const ADMIN_KEY = "admin_passcode";
+
+export async function getAdminPasscode(): Promise<string> {
+  return (await storage.secureGet<string>(ADMIN_KEY, "")) ?? "";
+}
+
+export async function saveAdminPasscode(passcode: string) {
+  await storage.secureSet(ADMIN_KEY, passcode);
+}
 
 export type SubCategory = { key: string; name_en: string; name_hi: string };
 export type Category = {
@@ -36,8 +47,11 @@ export type Submission = {
 
 async function req<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options?.headers ?? {}),
+    },
   });
   if (!res.ok) {
     let detail = `Request failed (${res.status})`;
@@ -95,9 +109,10 @@ export type CreateGroupInput = {
 export function useCreateGroup() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: CreateGroupInput) =>
+    mutationFn: async (input: CreateGroupInput) =>
       req<CompatGroup>("/groups", {
         method: "POST",
+        headers: { "X-Admin-Passcode": await getAdminPasscode() },
         body: JSON.stringify(input),
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["groups"] }),
@@ -107,8 +122,12 @@ export function useCreateGroup() {
 export function useCreateModel() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: { name: string; brand: string }) =>
-      req("/models", { method: "POST", body: JSON.stringify(input) }),
+    mutationFn: async (input: { name: string; brand: string }) =>
+      req("/models", {
+        method: "POST",
+        headers: { "X-Admin-Passcode": await getAdminPasscode() },
+        body: JSON.stringify(input),
+      }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["models"] }),
   });
 }
