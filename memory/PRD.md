@@ -72,6 +72,9 @@ share the same spare part, and confirm/flag community data.
   (13 verified). Added new brand groups: Apple (iPhone 13/13 Pro/14) and Others.
   Duplicate Lava/Moto combo section in the paste was skipped (already imported).
   Seed script: /tmp/seed_tempered.py. Totals now: 553 groups, 116 verified.
+- (2026-06) Tempered Glass category now shows a "Normal Glass" sub-section
+  (amber, default open) with brand groups inside, above the "Curve Glass"
+  (teal) sub-section — per user request "pahele normal glass dikhna chahiye".
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

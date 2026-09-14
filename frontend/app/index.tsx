@@ -306,7 +306,57 @@ export default function Home() {
               <Text style={styles.emptyText}>{t("noData")}</Text>
             ) : (
               <>
-                {renderBrandGroups(cat.id, null, mainGroups)}
+                {cat.subCategories.length > 0 ? (
+                  <View style={styles.subBlock}>
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.subRow,
+                        styles.subRowNormal,
+                        pressed && styles.pressed,
+                      ]}
+                      onPress={() =>
+                        setOpenSub((s) => ({
+                          ...s,
+                          [`${cat.id}:main`]: s[`${cat.id}:main`] === false,
+                        }))
+                      }
+                      testID={`sub-${cat.id}:main`}
+                    >
+                      {openSub[`${cat.id}:main`] !== false ? (
+                        <CaretDown
+                          size={15}
+                          weight="bold"
+                          color={colors.brand}
+                        />
+                      ) : (
+                        <CaretRight
+                          size={15}
+                          weight="bold"
+                          color={colors.brand}
+                        />
+                      )}
+                      <Text style={styles.subNameNormal}>
+                        {t("normalGlass")}
+                      </Text>
+                      <View style={styles.countPill}>
+                        <Text style={styles.countText}>
+                          {mainGroups.length}
+                        </Text>
+                      </View>
+                    </Pressable>
+                    {openSub[`${cat.id}:main`] !== false && (
+                      <View style={styles.subBody}>
+                        {mainGroups.length === 0 ? (
+                          <Text style={styles.emptyText}>{t("noData")}</Text>
+                        ) : (
+                          renderBrandGroups(cat.id, null, mainGroups)
+                        )}
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  renderBrandGroups(cat.id, null, mainGroups)
+                )}
                 {cat.subCategories.map((sub) => {
                   const subGroups = catGroups.filter(
                     (g) => g.subCategory === sub.key,
@@ -597,6 +647,16 @@ const useStyles = makeStyles((colors) => ({
   subName: {
     flex: 1,
     color: colors.success,
+    fontFamily: fonts.displayMedium,
+    fontSize: 14,
+    letterSpacing: 0.3,
+  },
+  subRowNormal: {
+    borderColor: colors.brand,
+  },
+  subNameNormal: {
+    flex: 1,
+    color: colors.brand,
     fontFamily: fonts.displayMedium,
     fontSize: 14,
     letterSpacing: 0.3,
