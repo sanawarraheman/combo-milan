@@ -61,6 +61,8 @@ BRAND_GROUPS = [
     "Samsung",
     "Itel/Tecno/Infinix",
     "Lava/Micromax/Moto",
+    "Apple",
+    "Others",
 ]
 
 

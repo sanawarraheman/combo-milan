@@ -66,6 +66,12 @@ share the same spare part, and confirm/flag community data.
   Badal Mobile Daringbadi, Hitesh Mobile Gandamer Chowk, MS Mobile Service
   Point, MK Mobile Raiganj. Seed script: /tmp/seed_combo.py.
   Totals now: 484 groups, 103 verified.
+- (2026-06) Bulk data import round 3: Tempered Glass. 41 normal-glass groups
+  (Universal Tempered Glass List, cross-brand mixed groups grouped under first
+  brand) + 28 UV-glass groups imported into the Curve Glass sub-category
+  (13 verified). Added new brand groups: Apple (iPhone 13/13 Pro/14) and Others.
+  Duplicate Lava/Moto combo section in the paste was skipped (already imported).
+  Seed script: /tmp/seed_tempered.py. Totals now: 553 groups, 116 verified.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.
