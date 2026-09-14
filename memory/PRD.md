@@ -75,6 +75,14 @@ share the same spare part, and confirm/flag community data.
 - (2026-06) Tempered Glass category now shows a "Normal Glass" sub-section
   (amber, default open) with brand groups inside, above the "Curve Glass"
   (teal) sub-section — per user request "pahele normal glass dikhna chahiye".
+- (2026-06) Bulk data import round 4: Display Connector. 262 groups
+  (Vivo/iQoo 46, Redmi/Poco 45, Realme/Oppo/OnePlus 51, Samsung 38,
+  Itel/Tecno/Infinix 56, Lava/Micromax/Moto 26), 28 verified. New sources:
+  Itworld Rayya, MS Mobile Service Point Pali Rajasthan.
+  Seed script: /tmp/seed_connector.py.
+- (2026-06) UI fix: brand group names no longer truncate ("Realme/Oppo/OnePlus"
+  shows in full, wraps instead of ellipsis) — per user request.
+  Totals now: 815 groups, 144 verified.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

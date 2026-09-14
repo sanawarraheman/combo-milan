@@ -258,7 +258,7 @@ export default function Home() {
             <View style={styles.brandAvatar}>
               <Text style={styles.brandAvatarText}>{brand[0]}</Text>
             </View>
-            <Text style={styles.brandName} numberOfLines={1}>
+            <Text style={styles.brandName}>
               {brand}
             </Text>
             <StatPill value={items.length} label={t("groupsLabel")} />
