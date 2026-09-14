@@ -109,6 +109,10 @@ share the same spare part, and confirm/flag community data.
   reachable from Add Data top bar after passcode unlock. Backend:
   POST /api/submissions/{id}/review (admin-protected, sets status +
   reviewed_at); GET /api/submissions now requires X-Admin-Passcode.
+- (2026-09) App icon set from user-provided phone-repair artwork (phone +
+  gears + screwdriver on white rounded tile over graphite #14171c):
+  icon.png, adaptive-icon.png, favicon.png, splash-image.png. App name in
+  app.json changed to "Combo Milan"; splash/adaptive bg set to #14171c.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.
