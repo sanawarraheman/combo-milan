@@ -58,6 +58,14 @@ share the same spare part, and confirm/flag community data.
   Realme/Oppo/OnePlus 38, Samsung 36, Lava/Micromax/Moto 25.
   Seed script: /tmp/seed_oca.py (re-runnable reference).
   More categories' data expected from user next.
+- (2026-06) Bulk data import round 2: 257 Folder/Display/Combo (Universal
+  Combo List) groups seeded. Brand split: Itel/Tecno/Infinix 56,
+  Realme/Oppo/OnePlus 48, Vivo/iQoo 46, Redmi/Poco 44, Samsung 37,
+  Lava/Micromax/Moto 26. 43 verified. New sources: Muskan Mobile Firozabad,
+  Gulab Telecom Punjab, Mummy Daddy Agency Thirukovilur, Suman Unique Center,
+  Badal Mobile Daringbadi, Hitesh Mobile Gandamer Chowk, MS Mobile Service
+  Point, MK Mobile Raiganj. Seed script: /tmp/seed_combo.py.
+  Totals now: 484 groups, 103 verified.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.
