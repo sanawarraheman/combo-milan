@@ -1,0 +1,162 @@
+{
+  "app_name": "Combo Milan",
+  "personality": "7 Dark-First Utility DARK",
+  "personality_one_liner": "A dark, durable, tactical command center for mobile repair technicians, built for fast scanning and operational clarity in workshop environments.",
+  "color": {
+    "surface": "#14171c",
+    "onSurface": "#f5f6f8",
+    "surfaceSecondary": "#1f232a",
+    "onSurfaceSecondary": "#e1e4e8",
+    "surfaceTertiary": "#2a2f38",
+    "onSurfaceTertiary": "#d1d5db",
+    "surfaceInverse": "#ffffff",
+    "onSurfaceInverse": "#14171c",
+    "brand": "#f5a623",
+    "onBrand": "#14171c",
+    "brandPrimary": "#f5a623",
+    "onBrandPrimary": "#14171c",
+    "brandSecondary": "#d98f1c",
+    "onBrandSecondary": "#14171c",
+    "brandTertiary": "#453112",
+    "onBrandTertiary": "#f5a623",
+    "success": "#2bd9ae",
+    "onSuccess": "#092f25",
+    "warning": "#f5a623",
+    "onWarning": "#14171c",
+    "error": "#ef4444",
+    "onError": "#ffffff",
+    "info": "#3b82f6",
+    "onInfo": "#ffffff",
+    "border": "#2c323b",
+    "borderStrong": "#3b434f",
+    "divider": "#22262d",
+    "muted": "#8b94a0"
+  },
+  "typography": {
+    "displayFontFamily": "Oswald",
+    "textFontFamily": "Noto Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Dense but clear. Tighter margins between related data points, clear separation between distinct cards. Buttons must remain large (44pt+).",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 4,
+    "md": 8,
+    "lg": 12,
+    "pill": 999
+  },
+  "shadow_tier": "0",
+  "navigation": "stack_only",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "false",
+    "do's": [
+      "Keep surfaces flat and solid to maximize readability in low light and workshop environments."
+    ],
+    "dont's": [
+      "No blur, no glassmorphism. It interferes with the raw utility feel."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "none",
+      "android": "none",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "none",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Home",
+      "purpose": "Universal search, category browsing, and utility access point.",
+      "states": {
+        "loading": "Skeleton lists matching the nested category height",
+        "empty": "No categories found (Should not happen normally)",
+        "error": "Failed to load catalog, retry button."
+      },
+      "layout": "1. Header: Brand wordmark (left), EN/HI Language Toggle (right). 2. Full-width action row strictly below header (Voltage Calculator & Export to Excel buttons side-by-side, 44pt height). 3. Sticky Universal Search Bar below action row. If search is active, show absolute-positioned 'Search Results' live panel over the content. 4. Content: Scrollable list of 9 core categories. Tap a category to expand inline into Brand Groups (Redmi, Vivo, etc.). Tap a Brand to expand compatibility lists."
+    },
+    {
+      "name": "CompatibilityGroup",
+      "purpose": "Showcase exact models that share a spare part with verified status.",
+      "states": {
+        "loading": "Skeleton rows",
+        "empty": "No compatibility data added yet",
+        "error": "Error fetching data"
+      },
+      "layout": "Card layout inside expanded brand. Each card has: 1. Top row: Stat pills (e.g., '16 verified', '417 groups'). 2. Body: Wrapped, non-broken text string of compatible models (Model A = Model B = Model C). 3. Right side: Verified stamp (rotated dashed border, #2bd9ae) or Unconfirmed tag. 4. Bottom action row: 'Confirm' button with incrementing count, 'Suggest Correction' button, and source/technician name."
+    },
+    {
+      "name": "AdminUnlock",
+      "purpose": "Passcode gate to access data entry.",
+      "states": {
+        "loading": "Verifying passcode...",
+        "empty": "N/A",
+        "error": "Incorrect passcode shake animation."
+      },
+      "layout": "Simple modal or screen. Oversized number pad, solid surface background. Centered input dots."
+    },
+    {
+      "name": "AddData",
+      "purpose": "Admin form to insert new compatibility mappings.",
+      "states": {
+        "loading": "Saving mapping...",
+        "empty": "N/A",
+        "error": "Failed to add mapping, show banner."
+      },
+      "layout": "Standard form. Labels above inputs. Noto Sans body. Submit CTA sticky at bottom inside KeyboardAvoidingView."
+    },
+    {
+      "name": "SuggestCorrection",
+      "purpose": "Small bottom-sheet form for technicians to flag incorrect data.",
+      "states": {
+        "loading": "Submitting...",
+        "empty": "N/A",
+        "error": "Failed to submit."
+      },
+      "layout": "Bottom sheet. Text area for correction details. Submit button. Dismiss by swiping down."
+    }
+  ],
+  "images": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1572287817956-4f8d2a1add17?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNDR8MHwxfHNlYXJjaHwxfHxkYXJrJTIwbW9iaWxlJTIwcmVwYWlyJTIwd29ya3Nob3AlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc4OTM2MjAyOXww&ixlib=rb-4.1.0&q=85",
+      "alt": "Dark mobile repair workshop background"
+    },
+    "macro_parts_background": {
+      "url": "https://images.unsplash.com/photo-1773615098146-2341d1b72997?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBwaG9uZSUyMHNwYXJlJTIwcGFydHMlMjBtYWNybyUyMGRhcmt8ZW58MHx8fHwxNzg5MzYyMDI5fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Mobile phone spare parts macro dark"
+    },
+    "brand_samsung": {
+      "url": "https://images.unsplash.com/photo-1662947995689-ec5165848ad0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxTYW1zdW5nJTIwbG9nbyUyMHBuZ3xlbnwwfHx8fDE3ODkzNjIwMjh8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Samsung brand logo"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the Dark-First Utility DARK guidelines. Do not use glassmorphism or blur as it contradicts the requested raw workshop utility feel.",
+    "Use Oswald (Condensed) for headings and Noto Sans for all body and UI text, as Noto Sans has excellent Devanagari support for the Hindi toggle requirement.",
+    "Implement the Verified badge as a rotated stamp with a dashed border, using the success color #2bd9ae as requested.",
+    "The action buttons (Voltage Divider Calculator, Export to Excel) MUST sit in their own full-width row right below the header, NEVER squeezed next to text.",
+    "Compatibility lists ('Model A = Model B...') must wrap naturally at word boundaries and never break halfway through a model name. Use flex-wrap or text-wrapping appropriately.",
+    "Use Phosphor icons with solid, readable strokes. The design should prioritize glanceability and touch accuracy over decoration.",
+    "For brand logos that failed to fetch via image selector (Redmi, Vivo, Realme), gracefully fallback to Text-based initial avatars inside a brandTertiary square, but leave the code modular enough to insert real PNGs later.",
+    "Build the Universal Search as a sticky component with an absolute-positioned dropdown/panel for live results to prevent layout shifting of the main categories."
+  ]
+}

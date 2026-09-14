@@ -1,0 +1,41 @@
+{
+  "summary": "Combo Milan MVP tested end-to-end (backend + frontend). Backend: 11/11 pytest cases passed covering /meta (9 categories with curve-glass sub, 6 brand groups), /groups create (main + curve-glass), confirm increment + persistence, /models, /submissions and /admin/verify (4321 -> ok:true, wrong -> ok:false). Frontend: verified home load, EN<->HI language toggle, 9 category rows, Curve Glass nested sub under Tempered Glass, admin flow with keypad 4321 -> add-data screen, group create appears on Home (Battery > Redmi/Poco), Confirm button increments count on card, Suggest a correction bottom sheet submits, universal search shows live results panel and tapping a result opens category+brand+card, Voltage Divider Calculator computes Vout = Vin*R2/(R1+R2) correctly (10*1000/2000=5V; 12*1000/4000=3V), Export to Excel triggers CSV download on web (combo-milan.csv), and wrong passcode stays on lock screen. No blocking issues found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "SuggestCorrectionSheet (bottom sheet)", "issue": "Console warning 'could not find scrollable ref!' fires multiple times when the correction bottom sheet interacts with focused inputs. Likely a react-native-reanimated / bottom sheet ref wiring issue. Not blocking submission. Reference: /app/frontend/src/components/SuggestCorrectionSheet.tsx"},
+      {"component": "admin-unlock shake animation", "issue": "Warning 'Animated: useNativeDriver is not supported because the native animated module is missing. Falling back to JS-based animation.' Set useNativeDriver:false on web or gate by Platform.OS to silence. Reference: /app/frontend/app/admin-unlock.tsx:29-33"},
+      {"component": "Global props/styles", "issue": "Deprecation warnings: 'props.pointerEvents is deprecated. Use style.pointerEvents' and 'shadow* style props are deprecated. Use boxShadow'. Cosmetic but should be migrated for future RN versions."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_combo_milan.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional) Silence useNativeDriver warning on web in admin-unlock shake animation (Platform-gate or set useNativeDriver:false when Platform.OS === 'web').",
+    "(Optional) Investigate 'could not find scrollable ref!' warnings coming from the Suggest Correction bottom sheet TextInputs.",
+    "(Optional) Migrate deprecated shadow* props to boxShadow and props.pointerEvents to style.pointerEvents to be future-proof."
+  ],
+  "critical_code_review_comments": [
+    "Backend server.py is concise and correct: MongoDB _id excluded via projection and pop, uuid ids used, HTTP 400/404 handled where relevant, ADMIN_PASSCODE read from env with a fallback. Good.",
+    "Frontend uses process.env.EXPO_PUBLIC_BACKEND_URL consistently in api.ts. All interactive elements carry testID. React Query invalidation used correctly on confirm/create.",
+    "Data persistence verified through Confirm (2 -> 3) surviving screen navigation, and created group visible via Home counts (3 groups, 2 verified)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_combo_milan.py (new pytest suite)",
+    "/app/test_reports/pytest/pytest_results.xml (JUnit report)"
+  ],
+  "success_rate": {"backend": "100% (11/11)", "frontend": "100% of covered flows"},
+  "seed_data_creation": "Created via API tests and admin UI: compat_groups with TEST_/UITEST_ prefixes in Battery (Redmi/Poco, verified) and Tempered Glass > curve-glass (Samsung, unconfirmed); one model TEST_Redmi Note 12; one submission TEST_Redmi Note 11.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Preview DB now contains ~3 compat groups (Battery x2 verified, Tempered Glass curve-glass x1 unconfirmed), 1 model and 1 pending submission with UITEST_/TEST_ prefixes. Backend base URL: EXPO_PUBLIC_BACKEND_URL. Admin passcode: 4321. Language toggle initial value = 'EN' (button text switches to 'हि' after tap). Key selectors: [data-testid='category-<id>'], [data-testid='sub-<catId>:<subKey>'], [data-testid='brand-<catId>|<sub|main>|<brand>'], [data-testid='key-<digit>'], [data-testid='save-group'], [data-testid='input-vin|r1|r2'], [data-testid='vout-result'], [data-testid='action-export|action-calculator|action-add-data'], [data-testid='search-input'], [data-testid='result-<id>']. Note: on web the export triggers a real file download; use expect_download in Playwright.",
+  "rca_of_issue": "N/A - no issues to root-cause. Only minor console deprecation/animation warnings noted above; none affect functionality."
+}
