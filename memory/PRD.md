@@ -104,6 +104,11 @@ share the same spare part, and confirm/flag community data.
   /tmp/subboard_raw.txt). Model-only groups (no part numbers), "=" and
   brand-keyword splitting, mojibake cleaned, iQOO spellings normalised.
   Totals now: 1654 groups, 188 verified. All 4 pending user lists done.
+- (2026-09) Admin Review Panel: new /review screen (Pending/Approved/
+  Rejected tabs with counts, approve/reject buttons, pull-to-refresh),
+  reachable from Add Data top bar after passcode unlock. Backend:
+  POST /api/submissions/{id}/review (admin-protected, sets status +
+  reviewed_at); GET /api/submissions now requires X-Admin-Passcode.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.

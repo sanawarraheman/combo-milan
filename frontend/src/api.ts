@@ -84,7 +84,23 @@ export function useGroups() {
 export function useSubmissions() {
   return useQuery({
     queryKey: ["submissions"],
-    queryFn: () => req<Submission[]>("/submissions"),
+    queryFn: async () =>
+      req<Submission[]>("/submissions", {
+        headers: { "X-Admin-Passcode": await getAdminPasscode() },
+      }),
+  });
+}
+
+export function useReviewSubmission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { id: string; action: "approve" | "reject" }) =>
+      req<Submission>(`/submissions/${input.id}/review`, {
+        method: "POST",
+        headers: { "X-Admin-Passcode": await getAdminPasscode() },
+        body: JSON.stringify({ action: input.action }),
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["submissions"] }),
   });
 }
 

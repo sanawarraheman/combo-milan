@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Check, Plus, X } from "phosphor-react-native";
+import { Check, ClipboardText, Plus, X } from "phosphor-react-native";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -102,9 +102,20 @@ export default function AddData() {
     <View style={[styles.screen, { paddingTop: insets.top }]}>
       <View style={styles.topBar}>
         <Text style={styles.headerTitle}>{t("addData")}</Text>
-        <Pressable onPress={() => router.back()} hitSlop={12} testID="add-close">
-          <X size={24} weight="bold" color={colors.onSurface} />
-        </Pressable>
+        <View style={styles.topBarRight}>
+          <Pressable
+            onPress={() => router.push("/review")}
+            hitSlop={12}
+            style={styles.reviewBtn}
+            testID="open-review"
+          >
+            <ClipboardText size={16} weight="bold" color={colors.brand} />
+            <Text style={styles.reviewBtnText}>{t("reviewTitle")}</Text>
+          </Pressable>
+          <Pressable onPress={() => router.back()} hitSlop={12} testID="add-close">
+            <X size={24} weight="bold" color={colors.onSurface} />
+          </Pressable>
+        </View>
       </View>
 
       <KeyboardAvoidingView
@@ -315,6 +326,24 @@ const useStyles = makeStyles((colors) => ({
     fontFamily: fonts.displayBold,
     fontSize: 22,
     letterSpacing: 0.5,
+  },
+  topBarRight: { flexDirection: "row", alignItems: "center", gap: 14 },
+  reviewBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    height: 36,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: colors.brandTertiary,
+    borderWidth: 1,
+    borderColor: colors.brand,
+  },
+  reviewBtnText: {
+    color: colors.brand,
+    fontFamily: fonts.displayMedium,
+    fontSize: 12,
+    letterSpacing: 0.3,
   },
   card: {
     backgroundColor: colors.surfaceSecondary,

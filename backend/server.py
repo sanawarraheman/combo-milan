@@ -131,6 +131,10 @@ class PasscodeVerify(BaseModel):
     passcode: str
 
 
+class SubmissionReview(BaseModel):
+    action: str  # "approve" | "reject"
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
@@ -207,7 +211,7 @@ async def create_model(payload: BrandModelCreate):
     return doc
 
 
-@api_router.get("/submissions")
+@api_router.get("/submissions", dependencies=[Depends(verify_admin)])
 async def get_submissions():
     docs = await db.pending_submissions.find({"deleted_at": None}, {"_id": 0}).sort("created_at", -1).to_list(5000)
     return docs
@@ -233,6 +237,22 @@ async def create_submission(payload: SubmissionCreate):
 @api_router.post("/admin/verify")
 async def verify_passcode(payload: PasscodeVerify):
     return {"ok": payload.passcode.strip() == ADMIN_PASSCODE}
+
+
+@api_router.post("/submissions/{sub_id}/review", dependencies=[Depends(verify_admin), Depends(rate_limit)])
+async def review_submission(sub_id: str, payload: SubmissionReview):
+    if payload.action not in ("approve", "reject"):
+        raise HTTPException(status_code=400, detail="action must be approve or reject")
+    new_status = "approved" if payload.action == "approve" else "rejected"
+    result = await db.pending_submissions.find_one_and_update(
+        {"id": sub_id, "deleted_at": None},
+        {"$set": {"status": new_status, "reviewed_at": now_iso()}},
+        return_document=True,
+    )
+    if not result:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    result.pop("_id", None)
+    return result
 
 
 app.include_router(api_router)

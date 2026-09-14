@@ -70,6 +70,15 @@ const en: Dict = {
   dropsLabel: "Voltage drops",
   totalResistance: "Total resistance",
   circuitCurrent: "Circuit current",
+  // review panel
+  reviewTitle: "Review corrections",
+  pendingLabel: "Pending",
+  approvedLabel: "Approved",
+  rejectedLabel: "Rejected",
+  approve: "Approve",
+  reject: "Reject",
+  noSubmissions: "No submissions here",
+  claimedLabel: "Claimed",
 };
 
 const hi: Dict = {
@@ -132,6 +141,14 @@ const hi: Dict = {
   dropsLabel: "वोल्टेज ड्रॉप",
   totalResistance: "कुल रेजिस्टेंस",
   circuitCurrent: "सर्किट करंट",
+  reviewTitle: "सुधार समीक्षा",
+  pendingLabel: "लंबित",
+  approvedLabel: "स्वीकृत",
+  rejectedLabel: "अस्वीकृत",
+  approve: "स्वीकार करें",
+  reject: "अस्वीकार करें",
+  noSubmissions: "यहाँ कोई सबमिशन नहीं",
+  claimedLabel: "दावा",
 };
 
 const DICTS: Record<Lang, Dict> = { en, hi };
