@@ -50,6 +50,14 @@ share the same spare part, and confirm/flag community data.
 - (2026-06) Voltage Divider Calculator now has Basic + Advanced modes; Advanced
   supports 2-6 series resistors with per-resistor voltage drops, total
   resistance and circuit current.
+- (2026-06) Bulk data import round 1: 227 Touch/OCA Glass compatibility groups
+  seeded from user's universal lists (60 verified, with shop sources like
+  Krishna Mobile Mankapur, Patel Telecom Sanchore, Suresh Communication Delhi,
+  Radhe Mobile Manasa, Balaji Mobile Kalapipal, Rajaram Telecom Raipur).
+  Brand split: Itel/Tecno/Infinix 47, Redmi/Poco 42, Vivo/iQoo 39,
+  Realme/Oppo/OnePlus 38, Samsung 36, Lava/Micromax/Moto 25.
+  Seed script: /tmp/seed_oca.py (re-runnable reference).
+  More categories' data expected from user next.
 
 ## Backlog (prioritized)
 - P1: Admin review screen to approve/reject pending submissions into live data.
